@@ -138,10 +138,9 @@ func splitWord(s string) (word, rest string) {
 // digit is shown, otherwise it is hidden. Numbers are always rounded down.
 // This should be fine for most human beings.
 func humanize(size int64) string {
-	if size < 1000 {
-		return fmt.Sprintf("%dB", size)
+	if size < 1024 {
+		return fmt.Sprintf("%d B", size)
 	}
-
 	suffix := []string{
 		"K", // kilo
 		"M", // mega
@@ -153,14 +152,14 @@ func humanize(size int64) string {
 		"Y", // yotta
 	}
 
-	curr := float64(size) / 1000
+	curr := float64(size) / 1024
 	for _, s := range suffix {
 		if curr < 10 {
-			return fmt.Sprintf("%.1f%s", curr-0.0499, s)
-		} else if curr < 1000 {
-			return fmt.Sprintf("%d%s", int(curr), s)
+			return fmt.Sprintf("%.2f %s", curr, s)
+		} else if curr < 1024 {
+			return fmt.Sprintf("%d %s", int(curr), s)
 		}
-		curr /= 1000
+		curr /= 1024
 	}
 
 	return ""
