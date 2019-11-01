@@ -211,7 +211,7 @@ func fileInfo(f *file, d *dir) string {
 					f.dirCount = -2
 				}
 
-				names, err := d.Readdirnames(1000)
+				names, err := d.Readdirnames(0)
 				d.Close()
 
 				if names == nil && err != io.EOF {
@@ -224,10 +224,8 @@ func fileInfo(f *file, d *dir) string {
 			switch {
 			case f.dirCount < 0:
 				info = fmt.Sprintf("%s    ?", info)
-			case f.dirCount < 1000:
-				info = fmt.Sprintf("%s %4d", info, f.dirCount)
 			default:
-				info = fmt.Sprintf("%s 999+", info)
+				info = fmt.Sprintf("%s %4d", info, f.dirCount)
 			}
 		case "time":
 			info = fmt.Sprintf("%s %12s", info, f.ModTime().Format("Jan _2 15:04"))
