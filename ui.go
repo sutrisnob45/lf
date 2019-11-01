@@ -273,9 +273,6 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 
 	if gOpts.number || gOpts.relativenumber {
 		lnwidth = 1
-		for j := 10; j < len(dir.files); j *= 10 {
-			lnwidth++
-		}
 		lnformat = fmt.Sprintf("%%%d.d ", lnwidth)
 	}
 
