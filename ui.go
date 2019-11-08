@@ -281,10 +281,10 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 
 	for i, f := range dir.files[beg:end] {
 		fg, bg := colors.get(f)
-
+		var s []rune
 		var ln string
-		if lnwidth > 0 {
 
+		if lnwidth > 0 {
 			if gOpts.number && (!gOpts.relativenumber || i == dir.pos) {
 				ln = fmt.Sprintf(lnformat, i+1+beg)
 			} else if gOpts.relativenumber {
@@ -294,29 +294,29 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 					ln = fmt.Sprintf(lnformat, i-dir.pos)
 				}
 			}
+
+			s = append(s, ' ')
+			for _, r := range ln {
+				s = append(s, r)
+			}
 		}
 
 		path := filepath.Join(dir.path, f.Name())
 
 		if _, ok := selections[path]; ok {
-			win.print(lnwidth, i, fg, termbox.ColorMagenta, " ")
+			s = append(s, ' ')
+			fg = termbox.ColorMagenta
 		} else if cp, ok := saves[path]; ok {
+			s = append(s, ' ')
 			if cp {
-				win.print(lnwidth, i, fg, termbox.ColorYellow, " ")
+				fg = termbox.ColorYellow
 			} else {
-				win.print(lnwidth, i, fg, termbox.ColorRed, " ")
+				fg = termbox.ColorRed
 			}
 		}
 
 		if i == dir.pos {
 			fg |= termbox.AttrReverse
-		}
-
-		var s []rune
-
-		s = append(s, ' ')
-		for _, r := range ln {
-			s = append(s, r)
 		}
 
 		if gOpts.icons {
