@@ -273,14 +273,17 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 
 	if gOpts.number || gOpts.relativenumber {
 		lnwidth = 1
+		for j := 10; j <= len(dir.files); j *= 10 {
+			lnwidth++
+		}
 		lnformat = fmt.Sprintf("%%%d.d ", lnwidth)
 	}
 
 	for i, f := range dir.files[beg:end] {
 		fg, bg := colors.get(f)
 
+		var ln string
 		if lnwidth > 0 {
-			var ln string
 
 			if gOpts.number && (!gOpts.relativenumber || i == dir.pos) {
 				ln = fmt.Sprintf(lnformat, i+1+beg)
@@ -291,8 +294,6 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 					ln = fmt.Sprintf(lnformat, i-dir.pos)
 				}
 			}
-
-			win.print(0, i, termbox.ColorYellow, bg, ln)
 		}
 
 		path := filepath.Join(dir.path, f.Name())
@@ -314,6 +315,9 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 		var s []rune
 
 		s = append(s, ' ')
+		for _, r := range ln {
+			s = append(s, r)
+		}
 
 		if gOpts.icons {
 			s = append(s, []rune(icons.get(f))...)
@@ -339,9 +343,9 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 
 		if len(info) > 0 && win.w-2 > 2*len(info) {
 			if win.w-2 > w+len(info) {
-				s = runeSliceWidthRange(s, 0, win.w-3-len(info))
+				s = runeSliceWidthRange(s, 0, win.w-2-len(info))
 			} else {
-				s = runeSliceWidthRange(s, 0, win.w-4-len(info))
+				s = runeSliceWidthRange(s, 0, win.w-3-len(info))
 				s = append(s, '~')
 			}
 			for _, r := range info {
@@ -351,7 +355,7 @@ func (win *win) printDir(dir *dir, selections map[string]int, saves map[string]b
 
 		s = append(s, ' ')
 
-		win.print(lnwidth+1, i, fg, bg, string(s))
+		win.print(0, i, fg, bg, string(s))
 	}
 }
 
