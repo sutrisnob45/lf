@@ -133,12 +133,11 @@ func splitWord(s string) (word, rest string) {
 	return
 }
 
-// This function converts a size in bytes to a human readable form using metric
-// suffixes (e.g. 1K = 1000). For values less than 10 the first significant
-// digit is shown, otherwise it is hidden. Numbers are always rounded down.
-// This should be fine for most human beings.
+// This function converts a size in bytes to a human readable format using
+// SI (decimal) format (e.g. 1K = 1000).
 func humanize(size int64) string {
-	if size < 1024 {
+	const unit = 1000
+	if size < unit {
 		return fmt.Sprintf("%d B", size)
 	}
 	suffix := []string{
@@ -152,17 +151,12 @@ func humanize(size int64) string {
 		"Y", // yotta
 	}
 
-	curr := float64(size) / 1024
-	for _, s := range suffix {
-		if curr < 10 {
-			return fmt.Sprintf("%.2f %s", curr, s)
-		} else if curr < 1024 {
-			return fmt.Sprintf("%d %s", int(curr), s)
-		}
-		curr /= 1024
+	div, exp := int64(unit), 0
+	for n := size / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
 	}
-
-	return ""
+	return fmt.Sprintf("%.1f %s", float64(size)/float64(div), suffix[exp])
 }
 
 // This regexp is used to partition a given string as numbers and non-numbers.
