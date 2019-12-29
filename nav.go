@@ -33,6 +33,7 @@ type file struct {
 	accessTime time.Time
 	changeTime time.Time
 	ext        string
+	reverse    bool
 }
 
 func readdir(path string) ([]*file, error) {
@@ -151,6 +152,16 @@ func (dir *dir) sort() {
 		sort.SliceStable(dir.files, func(i, j int) bool {
 			return dir.files[i].accessTime.Before(dir.files[j].accessTime)
 		})
+	case reverse:
+		for i, j := 0, len(dir.files)-1; i < len(dir.files); i++ {
+			if i < j {
+				dir.files[i], dir.files[j] = dir.files[j], dir.files[i]
+				j--
+			} else {
+				break
+			}
+		}
+		// return dir.files[i].birthTime.Before(dir.files[j].birthTime)
 	case ctimeSort:
 		sort.SliceStable(dir.files, func(i, j int) bool {
 			return dir.files[i].changeTime.Before(dir.files[j].changeTime)

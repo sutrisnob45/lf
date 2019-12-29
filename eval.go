@@ -253,8 +253,10 @@ func (e *setExpr) eval(app *app, args []string) {
 			gOpts.sortType.method = atimeSort
 		case "ext":
 			gOpts.sortType.method = extSort
+		case "reverse":
+			gOpts.sortType.method = reverse
 		default:
-			app.ui.echoerr("sortby: value should either be 'natural', 'name', 'size', 'time', 'atime', 'ctime' or 'ext'")
+			app.ui.echoerr("sortby: value should either be 'natural', 'name', 'size', 'time', 'atime', 'ctime', 'ext' or 'reverse'")
 			return
 		}
 		app.nav.sort()
@@ -287,9 +289,9 @@ func (e *setExpr) eval(app *app, args []string) {
 		toks := strings.Split(e.val, ":")
 		for _, s := range toks {
 			switch s {
-			case "", "size", "time", "atime", "ctime":
+			case "", "size", "time", "atime", "btime", "ctime":
 			default:
-				app.ui.echoerr("info: should consist of 'size', 'time', 'atime' or 'ctime' separated with colon")
+				app.ui.echoerr("info: should consist of 'size', 'time', 'atime', 'btime' or 'ctime' separated with colon")
 				return
 			}
 		}
