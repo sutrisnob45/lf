@@ -850,6 +850,7 @@ func (ui *ui) readEvent(ch chan<- expr, ev termbox.Event) {
 			}
 			ui.keyAcc = append(ui.keyAcc, []rune(val)...)
 		}
+		os.Setenv("key_c", string(ui.keyCount))
 
 		if len(ui.keyAcc) == 0 {
 			ch <- draw
