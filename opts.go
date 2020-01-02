@@ -12,6 +12,7 @@ const (
 	atimeSort
 	ctimeSort
 	extSort
+	reverse
 )
 
 type sortOption byte
